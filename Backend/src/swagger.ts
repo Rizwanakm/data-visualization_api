@@ -1,12 +1,10 @@
-// src/swagger.ts
-
-// @ts-ignore TS7016: swagger-jsdoc has no type definitions
+// @ts-ignore
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { Express } from "express";
 
-// Swagger options
-const options: swaggerJSDoc.Options = {
+// Swagger options without type
+const options = {
   definition: {
     openapi: "3.0.0",
     info: {
@@ -17,18 +15,15 @@ const options: swaggerJSDoc.Options = {
     servers: [
       {
         url: process.env.BASE_URL || "http://localhost:5000",
-        
+        description: "Local or deployed backend",
       },
     ],
   },
-  // Files containing Swagger annotations
-  apis: ["./src/routes/*.ts", "./src/controllers/*.ts"],
+  apis: ["./src/routes/*.ts", "./src/controllers/*.ts"], // scan for Swagger comments
 };
 
-// Generate Swagger specification
 const swaggerSpec = swaggerJSDoc(options);
 
-// Setup function to add Swagger UI to Express app
 export const setupSwagger = (app: Express) => {
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };
